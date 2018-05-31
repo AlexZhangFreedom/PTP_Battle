@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .user-block{
+            background:#000;
+            color:#fff;
+            position: absolute;
+            padding:10px;
+            top:100px;
+            left:100px;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/1.12.2/jquery.js"></script>
+</head>
+    <div class="main-wrapper"></div>
+<body>
+</body>
+
+<script src="/socket.io.js"></script>
+<script>
+    var socket = io();
+
+    socket.on('pos', function (msg) {
+
+        var $ub = $('#'+msg.uuid);
+        $ub.css({
+            "left":msg.left,
+            "top":msg.top
+        });
+        console.log(msg);
+    });
+
+    socket.on('newUser',function(users){
+        $('.main-wrapper').empty();
+        users.forEach(element => {
+            var $ub = $("<div class='user-block'>新玩家</div>")
+                        .attr('id',element.uuid)
+                        .css({
+                            background:element.bgColor,
+                            top:element.top,
+                            left:element.left
+                        })
+            $('.main-wrapper').append($ub);
+        });
+
+        
+    });
+
+    socket.on('userLeave',function(msg){
+        $('#'+msg.uuid).remove();
+    });
+    // socket.on('userLeave',function(msg){
+    //     $('div:last-child').remove();
+    // });
+    
+</script>
+
+</html>

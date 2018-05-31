@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>控制器</title>
+    <style>
+        button {
+            height: 50px;
+            line-height: 50px;
+            padding: 0 40px;
+            font-size: 30px;
+            width: 100px;
+            display: block;
+        }
+
+        .t {
+            margin: 0 auto;
+        }
+
+        .l {
+            float: left;
+        }
+
+        .r {
+            float: right;
+        }
+
+        .b {
+            margin: 0 auto;
+        }
+
+        .row:after {
+            clear: both;
+            display: block;
+            content: "";
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/1.12.2/jquery.js"></script>
+</head>
+
+<body>
+    <h1>控制器</h1>
+    <div>
+        <button class="t">上</button>
+    </div>
+    <div class="row">
+        <button class="l">左</button>
+        <button class="r">右</button>
+    </div>
+    <div>
+        <button class="b">下</button>
+    </div>
+</body>
+<script src="/socket.io.js"></script>
+<script>
+
+    var topp = 100;
+    var left = 100;
+    var socket = io('/');
+
+    var changePos = function(){
+        socket.emit('pos', {
+            top: topp,
+            left:left
+        });
+    }
+
+    $('.l').on('click', () => {
+        console.log("往左");
+        left -= 10;
+        changePos();
+    });
+    $('.r').on('click', () => {
+        console.log("往右");
+        left +=10;
+        changePos();
+    });
+    $('.t').on('click', () => {
+        console.log("往上");
+        topp-=10;
+        changePos();
+    });
+    $('.b').on('click', () => {
+        console.log("往下");
+        topp+=10;
+        changePos();
+    });
+
+
+</script>
+
+</html>
