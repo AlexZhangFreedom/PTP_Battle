@@ -15,39 +15,94 @@
             top:100px;
             left:100px;
         }
+        .qr-wrapper{
+            position: absolute;
+            right:0;
+            bottom:0;
+        }
+        .qr-wrapper .title-wrapper{
+            font-size:22px;
+            text-align: center;
+        }
+        .main-wrapper{
+            position:absolute;
+            border:2px dashed #333;
+            top:15px;
+            left:15px;
+            bottom:15px;
+            right:300px;
+        }
+        .main-wrapper #stage{
+            position: absolute;
+            top:0;
+            left:0;
+            z-index:-10;
+        }
+        .profile-panel{
+            position: absolute;
+            top:15px;
+            right:15px;
+            width:240px;
+        }
+        .profile-panel{
+            font-size:24px;
+        }
+        .profile-panel .fa{
+            font-size:48px;
+            color:red;
+        }
     </style>
     <script src="https://cdn.bootcss.com/jquery/1.12.2/jquery.js"></script>
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
 </head>
-    <div class="main-wrapper"></div>
+    <div class="main-wrapper">
+        <canvas id="stage" width="500" height="500"></canvas>
+    </div>
+    <div class="profile-panel">
+        <i class="fa fa-heart"></i>x1
+    </div>    
+    <div class="qr-wrapper">
+        <div class="title-wrapper">
+            微信扫码加入我们!!!
+        </div>
+        <img src="qr.png" alt="">
+    </div>
 <body>
 </body>
 
 <script src="/socket.io.js"></script>
 <script>
     var socket = io();
-
+    var userArr = [];
     socket.on('pos', function (msg) {
-
-        var $ub = $('#'+msg.uuid);
-        $ub.css({
-            "left":msg.left,
-            "top":msg.top
+        userArr.forEach(element => {
+            if(element.uuid===msg.uuid){
+                element.left = msg.left;
+                element.top = msg.top;
+            }
         });
+        // var $ub = $('#'+msg.uuid);
+        // $ub.css({
+        //     "left":msg.left,
+        //     "top":msg.top
+        // });
         console.log(msg);
     });
 
     socket.on('newUser',function(users){
-        $('.main-wrapper').empty();
-        users.forEach(element => {
-            var $ub = $("<div class='user-block'>新玩家</div>")
-                        .attr('id',element.uuid)
-                        .css({
-                            background:element.bgColor,
-                            top:element.top,
-                            left:element.left
-                        })
-            $('.main-wrapper').append($ub);
-        });
+        // $('.main-wrapper').empty();
+        userArr = users;
+        // users.forEach(element => {
+        //     userArr = users;
+        //     var $ub = $("<div class='user-block'>新玩家</div>")
+        //                 .attr('id',element.uuid)
+        //                 .css({
+        //                     background:element.bgColor,
+        //                     top:element.top,
+        //                     left:element.left
+        //                 })
+        //     $('.main-wrapper').append($ub);
+        // });
 
         
     });
@@ -55,10 +110,28 @@
     socket.on('userLeave',function(msg){
         $('#'+msg.uuid).remove();
     });
+
+    socket.on('display-attack',function(msg){
+        console.log("放出了簡陋的技能");
+    });
     // socket.on('userLeave',function(msg){
     //     $('div:last-child').remove();
     // });
-    
+    var canvas = document.getElementById('stage');
+    var ctx = canvas.getContext('2d');
+    var main = function(){
+        ctx.clearRect(0,0,500,500);
+        
+        userArr.forEach(element=>{
+            ctx.fillStyle = element.bgColor;
+            ctx.drawImage(coderImg,element.left,element.top,72,60);
+            // ctx.fillRect(element.left,element.top,50,50)
+        })
+        requestAnimationFrame(main);
+    }
+    var coderImg = new Image();
+    coderImg.src="/img/timg.jpg"
+    main();
 </script>
 
 </html>

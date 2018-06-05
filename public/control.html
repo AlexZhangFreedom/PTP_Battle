@@ -37,6 +37,15 @@
             display: block;
             content: "";
         }
+        .skill-1{
+            width:120px;
+            height:120px;
+            line-height:118px;
+            text-align: center;
+            border:1px solid #123344;
+            font-size:24px;
+            border-radius: 50%;
+        }
     </style>
     <script src="https://cdn.bootcss.com/jquery/1.12.2/jquery.js"></script>
 </head>
@@ -52,6 +61,9 @@
     </div>
     <div>
         <button class="b">下</button>
+    </div>
+    <div class="skill-1">
+        技能
     </div>
 </body>
 <script src="/socket.io.js"></script>
@@ -70,25 +82,37 @@
 
     $('.l').on('click', () => {
         console.log("往左");
-        left -= 10;
-        changePos();
+        if(left-10>=0){
+            left -= 10;
+            changePos();
+        }
     });
     $('.r').on('click', () => {
-        console.log("往右");
-        left +=10;
-        changePos();
+        if(left+10<=500){
+            console.log("往右");
+            left +=10;
+            changePos();
+        }
     });
     $('.t').on('click', () => {
-        console.log("往上");
-        topp-=10;
-        changePos();
+        if(topp-10>=0){
+            console.log("往上");
+            topp-=10;
+            changePos();
+        }
     });
     $('.b').on('click', () => {
-        console.log("往下");
-        topp+=10;
-        changePos();
+        if(topp+10<=500){
+            console.log("往下");
+            topp+=10;
+            changePos();
+        }
     });
-
+    $('.skill-1').on('click',()=>{
+        socket.emit('ctrl-attack',{
+            action:"attack"
+        });
+    })
 
 </script>
 

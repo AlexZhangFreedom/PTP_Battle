@@ -46,5 +46,9 @@ io.on('connection', function (socket) {
            uuid:socket.id 
         });
     });
+    socket.on('ctrl-attack', function (msg) {
+        msg.uuid = socket.id;
+        socket.broadcast.emit('display-attack',msg);
+    });
 });
 http.listen(3000, () => console.log('Example app listening on port 3000!'))
